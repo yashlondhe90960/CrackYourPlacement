@@ -1,49 +1,57 @@
-public class Solution {
-
-    int m;
-    int n;
-
+class Solution {
     public boolean exist(char[][] board, String word) {
-        m = board.length;
-        n = board[0].length;
+        int n = board.length;
+        int m = board[0].length;
 
-        boolean result = false;
-
-        for (int i = 0; i < m; i++) {
-            for (int j = 0; j < n; j++) {
-                if (dfs(board, word, i, j, 0)) {
-                    return true;
+        for (int r = 0; r < n; r++) {
+            for (int c = 0; c < m; c++) {
+                if (word.charAt(0) == board[r][c]) {
+                    boolean found = dfs(board, r, c, word, 0);
+                    if (found)
+                        return true;
                 }
             }
         }
 
-        return result;
+        return false;
     }
 
-    public boolean dfs(char[][] board, String word, int i, int j, int wordPos) {
-
-        if (wordPos == word.length()) {
+    public boolean dfs(char[][] board, int r, int c, String word, int wordIndex) {
+        // base case
+        if (wordIndex == word.length()) {
             return true;
         }
 
-        // @note: here, return check can remove the boundary check in each recursion,
-        // nice!
-        if (i < 0 || j < 0 || i >= m || j >= n || board[i][j] != word.charAt(wordPos)) {
+        // out of bound
+        int rows = board.length;
+        int cols = board[0].length;
+
+        if (r < 0 || r >= rows || c < 0 || c >= cols || board[r][c] != word.charAt(wordIndex)) {
             return false;
         }
 
-        char temp = board[i][j];
+        // invalid cases
+        if (board[r][c] == '*' || board[r][c] != word.charAt(wordIndex)) {
 
-        board[i][j] = '#';
+            return false;
+        }
+        // mark as visited
+        char ch = board[r][c];
 
-        boolean result = (dfs(board, word, i - 1, j, wordPos + 1)
-                || dfs(board, word, i + 1, j, wordPos + 1)
-                || dfs(board, word, i, j - 1, wordPos + 1)
-                || dfs(board, word, i, j + 1, wordPos + 1));
+        board[r][c] = '*';
 
-        // restore from `#`
-        board[i][j] = temp;
+        // dfs calls
 
-        return result;
+        if (dfs(board, r - 1, c, word, wordIndex + 1) ||
+                dfs(board, r, c + 1, word, wordIndex + 1) ||
+                dfs(board, r, c - 1, word, wordIndex + 1) ||
+                dfs(board, r + 1, c, word, wordIndex + 1)) {
+            return true;
+        }
+        // backtracking
+        board[r][c] = ch;
+
+        return false;
+
     }
 }

@@ -19,6 +19,21 @@ class Solution {
     }
 }
 
+// Greedy solution
+class Solution {
+    public boolean canJump(int[] nums) {
+        int n = nums.length;
+        int finalPos = n - 1;
+
+        for (int idx = n - 2; idx >= 0; idx--) {
+            if (idx + nums[idx] >= finalPos) {
+                finalPos = idx;
+            }
+        }
+        return finalPos == 0;
+    }
+}
+
 // normal method
 // if(nums==null || nums.length==0)
 // return false;
